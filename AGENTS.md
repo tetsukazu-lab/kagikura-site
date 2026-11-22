@@ -1,12 +1,12 @@
 # AGENTS.md — 共通AI開発ルール
-<!-- common-rules revision: 2026-11-22.3 -->
+<!-- common-rules revision: 2026-11-22.4 -->
 適用対象: tetsukazu-lab Organization 配下のAI・開発者のみ。個人リポジトリ tetsukazu/* は対象外。共通ルールの正本は tetsukazu-lab/development-rules の AGENTS.md（https://github.com/tetsukazu-lab/development-rules/blob/main/AGENTS.md）。Organization内の対象リポジトリに共通部分を同期する。固有ルールは末尾または既存文書に保持する。既存仕様と衝突する場合は移行課題として記録し、動作・契約を勝手に変更しない。
 
 ## 設計・開発
 - 人間は要求・重要な意思決定・受入確認、AIは要求整理、設計、実装、自動テスト、文書、PR、CI、配布確認を担当する。最も単純な必要十分の構成を優先し、不要な依存やリファクタリングを避ける。
 - 着手前に README、既存指示書、docs、関連Issueを確認。Issueに目的、範囲、受入条件、テスト観点、優先順位、依存を記録し、重複を避ける。小さな論理単位に分割する。
 - 日本語名・英語名を定義。新規リポジトリ名は小文字の英数字を基本とする。複数コンポーネントはモノレポを基本とし apps/android、apps/web、apps/server、apps/windows 等を必要に応じて使う。既存構成を無断で移動しない。
-- Android applicationId と基本パッケージは link.iwa.<appname>。既存の applicationId、署名鍵は維持する。
+- Android applicationId と基本パッケージは link.iwa.<appname>。既存の applicationId は維持する。署名鍵は下記の共通化・移行ルールに従う。
 - README.md、AGENTS.md、CHANGELOG.md、docs/、重要な判断は docs/adr/。仕様の正本は最新版の設計書、過去はGit履歴。仕様変更はコードと文書を同一PRで更新。CLAUDE.md 等は共通ルールを参照し固有指示を保持する。
 
 ## Git・マージ
@@ -21,7 +21,7 @@
 - マージ直前に最新ベースで再採番しCI再実行、同一アプリのマージ・配布を直列化する。配布失敗時は同一成果物の再実行と修正後の新規リリースを区別。
 - アプリ内の設定/情報画面、Webのフッター等でバージョン表示、Serverはバージョン確認API等。可能なら該当リリースノートへの導線（非公開の場合は閲覧可能な方法）。
 - 標準はPRマージ時に自動リリース、タグ pr-<PR番号>、PR本文の ## リリースノート が唯一の生成元。CHANGELOG.mdへ履歴を蓄積。日本語・利用者目線で概要、新機能、改善、修正、既知の問題、テスター確認、必要な操作（再ログイン等は冒頭）を記述。空節・内部実装・秘密値は除外。
-- GitHub Releases と Android の Firebase App Distribution の両方に同一アプリ・同一バージョンのノートを自動反映する。モノレポは対象アプリ別の節を抽出。欠落・空のノートは配布前に失敗させる。WindowsはGitHub Releases、Web/Serverは既存の指定環境。Androidは既存鍵で署名済みAPK。変更対象外は配布しない。
+- GitHub Releases と Android の Firebase App Distribution の両方に同一アプリ・同一バージョンのノートを自動反映する。モノレポは対象アプリ別の節を抽出。欠落・空のノートは配布前に失敗させる。WindowsはGitHub Releases、Web/Serverは既存の指定環境。Androidは承認済みの有効な鍵で署名済みAPK。変更対象外は配布しない。
 - 片側のみ成功したら部分成功として報告し、同一成果物の再実行で重複・巻戻しを防ぐ。既存のタグ起点方式は動作確認を伴う移行PRで切替し、それまでは既存の方式を保持。
 
 ## CI/CD
@@ -30,10 +30,17 @@
 
 ## 設定名・秘密情報
 - GitHub Secrets、Variables、環境変数は UPPER_SNAKE_CASE。同一用途は同一名称、アプリ名接頭辞は原則不要。必要なものだけ使用し、設定ファイルの正本と二重管理しない。名称、型、用途、必須/任意、設定先、既定値を文書化（.env.example に秘密値を入れない）。
-- Secrets/署名鍵の値はアプリ・リポジトリ別に個別管理。Organization全体の共通化はしない。既存WIF/Secret Manager等を維持し、不必要なサービスアカウント鍵を発行しない。ログ・Git・Issue・PR・ノートへの秘密情報出力禁止。google-services.jsonの扱いは既存方針。
+- Androidリリース署名鍵のみ tetsukazu-lab 内で共通化する。それ以外のSecrets（Firebase/GCP/WIF/DB等）はアプリ・リポジトリ別に個別管理し、Organization全体の共通化はしない。既存WIF/Secret Manager等を維持し、不必要なサービスアカウント鍵を発行しない。ログ・Git・Issue・PR・ノートへの秘密情報出力禁止。google-services.jsonの扱いは既存方針。
 - 標準Secrets: ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD, ANDROID_DEBUG_KEYSTORE_BASE64, GOOGLE_SERVICES_JSON_BASE64（保管が必要な場合）, FIREBASE_SERVICE_ACCOUNT_JSON（鍵認証時のみ）, GOOGLE_CLIENT_SECRET（機密クライアントのみ）, GOOGLE_MAPS_API_KEY（秘密として管理する場合）, MONGODB_URI, MONGODB_TEST_URI, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, CLOUDFLARE_API_TOKEN。
 - 標準Variables: RUNNER_LABELS, JAVA_VERSION, NODE_VERSION, FLUTTER_VERSION, PYTHON_VERSION, FIREBASE_TOOLS_VERSION（既存のバージョン定義優先）、FIREBASE_PROJECT_ID, FIREBASE_ANDROID_APP_ID, FIREBASE_WEB_APP_ID, FIREBASE_API_KEY（公開用）, FIREBASE_AUTH_DOMAIN, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_TESTER_GROUPS, FIREBASE_HOSTING_SITE, GCP_PROJECT_ID, GCP_REGION, GCP_WIF_PROVIDER, GCP_DEPLOY_SERVICE_ACCOUNT, GCP_RUNTIME_SERVICE_ACCOUNT, GCP_ARTIFACT_REGISTRY_REPOSITORY, CLOUD_RUN_SERVICE, APP_NAME, APP_NAME_JA, ANDROID_APPLICATION_ID, API_BASE_URL, STORAGE_API_URL, GOOGLE_WEB_CLIENT_ID, MONGODB_DATABASE, CLOUDFLARE_ACCOUNT_ID, R2_BUCKET_NAME。公開用フロントエンド変数には必要なフレームワーク接頭辞（VITE_等）を付けてマッピング。秘密値を公開ビルドに入れない。
 - 未設定の必須変数は名前と理由のみ報告。移行は新名称設定→参照変更（必要なら旧名称フォールバック）→CI/配布確認→旧名称廃止。Secretsの登録済み値は読み出せないため、所有者による再登録が必要な場合は手順を報告。既存環境・認証を壊さない。
+
+## Android共通署名鍵
+- 新規Androidアプリは新規作成する共通リリース署名鍵を採用する。既存アプリは個別の移行検証と明示承認を経て順次切り替える。Windows署名、debug鍵、暗号化データの鍵、Firebase/GCP認証情報は対象外。
+- 鍵の正本を利用者がオフラインで安全に保管・バックアップする。Organization Secretsが利用可能ならAndroid対象リポジトリに限定して配布し、利用不可なら同じ値を対象リポジトリのSecretsへ登録する。development-rulesに秘密値は保存しない。
+- 移行用共通Secrets: COMMON_ANDROID_KEYSTORE_BASE64, COMMON_ANDROID_KEYSTORE_PASSWORD, COMMON_ANDROID_KEY_ALIAS, COMMON_ANDROID_KEY_PASSWORD。変数 ANDROID_SIGNING_MODE は既存アプリは未設定または legacy、新規・移行承認済みは common。ワークフローは明示されたモードの4項目を標準の ANDROID_KEYSTORE_* / ANDROID_KEY_* 環境変数へ割り当て、欠如・混在・不明モードは失敗させる。commonから旧鍵へ自動フォールバックしない。既存のSecret Manager等は移行完了まで維持。
+- 既存鍵と新鍵の公開証明書SHA-256を確認し、アプリごとに署名互換性、対応Android OS、Google/Firebase OAuth SHA-1/SHA-256登録、旧版からの更新、データバックアップ・復元を検証する。直接配布APKの鍵変更は通常上書き不可。署名ローテーションを検討し、非対応端末では明示承認の上でバックアップ・再インストール・復元を行う。旧鍵と旧設定は保全し、鍵の削除や配布切替を無断実施しない。
+- 共通鍵漏えいの影響範囲は全採用アプリ。対象リポジトリ、アクセス権、信頼済みRunner、リリースジョブに限定し、非信頼PRでは署名秘密を使わない。鍵・パスワードを出力せず一時ファイルを確実に削除する。
 
 ## 命名・DB
 - Kotlin/TS/Dartの変数・関数は camelCase、Pythonは snake_case、C#公開メンバーはPascalCase、クラスはPascalCase。新規MongoDB/SQLite項目は snake_case、APIパスおよび通常の新規Markdownファイルは kebab-case。言語標準・既存契約優先。
@@ -46,7 +53,7 @@
 - 完了報告は作業内容、変更ファイル、Issue/PR、CI・テスト、マージ、版、配布、未完了と受入事項。未確認は明記。
 
 ## 適用・例外
-- 文書専用・旧式・単一用途リポジトリでは該当事項のみ適用。Android/Firebase/配布等を不要に追加しない。既存デフォルトブランチ名、プロジェクト、実装、署名鍵を維持。
+- 文書専用・旧式・単一用途リポジトリでは該当事項のみ適用。Android/Firebase/配布等を不要に追加しない。既存デフォルトブランチ名、プロジェクト、実装を維持。署名鍵は承認済みの移行までは既存鍵を維持。
 - 現行ワークフローと規定が異なる場合は移行課題を記録し、実機/Runner/権限/配布確認後に切替。指示書の変更だけで実装済みとみなさない。固有ルールを保存し、矛盾・例外は理由、対象、解消条件を明示する。
 <!-- end common-rules -->
 
