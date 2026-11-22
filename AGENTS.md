@@ -1,6 +1,6 @@
 # AGENTS.md — 共通AI開発ルール
-<!-- common-rules revision: 2026-11-22.2 -->
-適用対象: tetsukazu-lab Organization 配下のAI・開発者のみ。個人リポジトリ tetsukazu/* は対象外。専用 development-rules リポジトリ作成までは tetsukazu-lab/tabinokio の AGENTS.md の共通部分を暫定正本とし、Organization内の各リポジトリへ同一内容を同期する。固有ルールは末尾または既存文書に保持する。既存仕様と衝突する場合は移行課題として記録し、動作・契約を勝手に変更しない。
+<!-- common-rules revision: 2026-11-22.3 -->
+適用対象: tetsukazu-lab Organization 配下のAI・開発者のみ。個人リポジトリ tetsukazu/* は対象外。共通ルールの正本は tetsukazu-lab/development-rules の AGENTS.md（https://github.com/tetsukazu-lab/development-rules/blob/main/AGENTS.md）。Organization内の対象リポジトリに共通部分を同期する。固有ルールは末尾または既存文書に保持する。既存仕様と衝突する場合は移行課題として記録し、動作・契約を勝手に変更しない。
 
 ## 設計・開発
 - 人間は要求・重要な意思決定・受入確認、AIは要求整理、設計、実装、自動テスト、文書、PR、CI、配布確認を担当する。最も単純な必要十分の構成を優先し、不要な依存やリファクタリングを避ける。
