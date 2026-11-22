@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>プライバシーポリシー | KagiKura</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main>
+<p><a href="../">KagiKura（鍵蔵）</a></p>
+<h1>KagiKura プライバシーポリシー</h1>
+<p class="lead">制定日: 2026年11月22日</p>
+
+<p>KagiKura（鍵蔵、以下「本アプリ」）は、Android と Windows で動く個人用の機密情報保管アプリです。このページは、本アプリが扱う情報と Google のデータの扱いを説明します。</p>
+
+<h2>1. 開発者が受け取る情報</h2>
+<p>本アプリの開発者は、利用者の情報を受け取りません。本アプリには開発者のサーバー・データベース・アクセス解析・広告・クラッシュ報告の送信はありません。</p>
+
+<h2>2. 端末に保存する情報</h2>
+<ul>
+<li>利用者が登録した項目・添付ファイルは、端末上で暗号化（AES-256-GCM、鍵の導出に Argon2id）してから保存します。</li>
+<li>復号に使う鍵とマスターパスワードは、端末の外に送りません。</li>
+<li>Google Drive と接続した場合、接続を続けるための情報を端末に保存します。
+<ul>
+<li>Windows: リフレッシュトークンを Windows の DPAPI（現在のユーザー）で暗号化して保存します。</li>
+<li>Android: トークンは Google Play 開発者サービスが管理し、本アプリは「接続している」という印（秘密を含まない）だけを保存します。</li>
+</ul>
+</li>
+</ul>
+
+<h2>3. Google ユーザーデータの扱い</h2>
+<p>本アプリは、利用者が Google Drive と接続した場合に限り、Google の OAuth で次の権限だけを求めます。</p>
+<ul>
+<li><code>https://www.googleapis.com/auth/drive.file</code>（本アプリが作成したファイルの参照・作成）</li>
+</ul>
+<p>この権限で、本アプリは利用者の Google Drive に <code>KagiKura</code> フォルダーを作り、暗号化済みのファイルだけを保存・取得して、利用者の複数の端末の間で同期します。</p>
+<ul>
+<li>本アプリが作成していない Drive のファイルは読みません。</li>
+<li>Google Drive に送るのは端末で暗号化したファイルだけで、平文の項目や復号の鍵は送りません。</li>
+<li>Google から得たデータは同期のためだけに使い、開発者や第三者に送信・共有・販売しません。広告や機械学習の学習にも使いません。</li>
+<li>本アプリによる Google ユーザーデータの使用と他のアプリへの転送は、<a href="https://developers.google.com/terms/api-services-user-data-policy">Google API サービスのユーザーデータに関するポリシー</a>（限定的使用の要件を含む）に従います。</li>
+</ul>
+
+<h2>4. 接続の解除と削除</h2>
+<ul>
+<li>本アプリの「Google Drive」画面で接続を解除すると、端末のトークン（または印）を消し、Google 側の認可も取り消します。</li>
+<li>Google アカウントの「セキュリティ」→「サードパーティ製のアプリとサービス」からも、本アプリのアクセスを削除できます。</li>
+<li>接続を解除しても Drive 上の <code>KagiKura</code> フォルダーは消しません。不要になった場合は、利用者が Google Drive から削除できます。</li>
+<li>端末のデータは、本アプリをアンインストールするか、保存先のフォルダーを削除すると消えます。</li>
+</ul>
+
+<h2>5. 変更</h2>
+<p>このポリシーを変えるときは、このページを更新し、制定日の下に改定日を記します。</p>
+
+<h2>6. 問い合わせ</h2>
+<p>本アプリに関する問い合わせは、Google の同意画面に表示されるデベロッパーのサポートメールへお送りください。</p>
+
+<footer>&copy; KagiKura</footer>
+</main>
+</body>
+</html>

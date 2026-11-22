@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KagiKura（鍵蔵）</title>
+<meta name="description" content="KagiKura（鍵蔵）は Android と Windows で使う個人用の機密情報保管アプリです。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<h1>KagiKura（鍵蔵）</h1>
+<p class="lead">Android と Windows で使う、個人用の機密情報保管アプリです。</p>
+
+<h2>できること</h2>
+<ul>
+<li>パスワードやメモ、添付ファイルを端末上で暗号化（AES-256-GCM、鍵の導出に Argon2id）して保存します。</li>
+<li>マスターパスワードと復号の鍵は端末の外に出しません。</li>
+<li>希望すれば、利用者自身の Google Drive を使って複数の端末の間で同期できます。Drive に送るのは暗号化済みのファイルだけです。</li>
+</ul>
+
+<h2>Google Drive の利用について</h2>
+<p>同期には Google の <code>drive.file</code> 権限だけを使い、本アプリが作成したファイル以外は読みません。開発者のサーバーはなく、利用者のデータを開発者が受け取ることはありません。</p>
+
+<h2>プライバシーポリシー</h2>
+<p><a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
+
+<footer>&copy; KagiKura</footer>
+</main>
+</body>
+</html>
